@@ -46,15 +46,22 @@ class HobbyController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-    		'title' => 'required|string',
+    		'name' => 'required|string|max:30',
     		'description'=> 'required|string'
-    	]);
-    	$hobby = new Hobby;
-    	$hobby->name = request('title');
-        $hobby->description = request('description');
-        $hobby->user_id = \Auth::user()->id;
-    	$hobby->save();
-    	return back()->with('message', 'Hobby successfully created');    }
+        ]);
+        
+        $hobby = Hobby::firstOrCreate([
+        'name' => request('name')], 
+        ['name' => request('name'), 
+        'description' => request('description'),
+        'user_id' => \Auth::user()->id
+        ]);
+        $hobby->save();
+
+        return ($hobby->wasRecentlyCreated) ? back()->with('message', 'Hobby successfully created')
+            :back()->with('message', 'Supplied hobby already registered');
+        
+     }
 
     /**
      * Display the specified resource.

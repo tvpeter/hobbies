@@ -6,7 +6,10 @@
         <div class="col-md-8">
             <div class="card">
              <div class="card-header">
+                @extends('layouts.errors')
+                @extends('layouts.success')
                 <ul class="nav nav-tabs nav-tabs-style-4" role="tablist">
+
                         <li class="nav-item">
                                 <a class="nav-link active" href="#hobbies" data-toggle="tab" role="tab">
                                   <i class="fe-icon-home"></i>
@@ -49,7 +52,7 @@
                                         <label for="title" class="col-md-2 col-form-label text-md-right">{{ __('Title') }}</label>
             
                                         <div class="col-md-10">
-                                            <input id="title" type="text" class="form-control @error('title') is-invalid @enderror" name="title" value="{{ old('title') }}" required autocomplete="title" autofocus>
+                                            <input id="title" type="text" class="form-control @error('name') is-invalid @enderror" name="name" required autocomplete="title" autofocus>
             
                                             @error('title')
                                                 <span class="invalid-feedback" role="alert">
