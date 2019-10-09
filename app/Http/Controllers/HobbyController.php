@@ -16,7 +16,7 @@ class HobbyController extends Controller
      */
     public function __construct(){
         
-        $this->middleware('auth');
+        $this->middleware(['auth', 'verified']);
     }
 
     /**
@@ -26,7 +26,9 @@ class HobbyController extends Controller
      */
     public function index()
     {
-        //
+        $hobbies = Hobby::where('user_id', \Auth::user()->id)->get();
+
+        return view('home', compact('hobbies'));
     }
 
     /**
