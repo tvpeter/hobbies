@@ -41,7 +41,39 @@
              <div class="card-body text-center">
                   <div class="tab-content">
                         <div class="tab-pane fade show active" id="hobbies" role="tabpanel">
-                            <p>hobbies</p>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                  <thead>
+                                    <tr class="thead-dark">
+                                      <th>#</th>
+                                      <th>Hobby</th>
+                                      <th class="text-left">Description</th>
+                                      <th>Edit</th>
+                                      <th>Delete</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    @php 
+                                    $count = 0;
+                                    @endphp
+                                    @foreach ($hobbies as $hobby)
+                                    @php
+                                       $count++; 
+                                    @endphp
+                                    <tr>
+                                    <th scope="row">{{ $count }}</th>
+                                      <td>{{$hobby->name }}</td>
+                                    <td class="text-left">{{ $hobby->description }}</td>
+                                      <td>Edit</td>
+                                      <td>Delete</td>
+                                    </tr>
+                                    
+                                    @endforeach
+                                    
+                                  </tbody>
+                                </table>
+                              </div>
+                              
                               </div>
                     <div class="tab-pane fade" id="add" role="tabpanel">
 
