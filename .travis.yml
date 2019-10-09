@@ -1,0 +1,23 @@
+# .travis.yml
+language: php
+
+php:
+  - 7.3
+
+services:
+  - postgresql
+
+cache:
+  directories:
+    - node_modules
+    - vendor
+
+before_script:
+  - cp .env.travis .env
+  - psql -c "CREATE DATABASE testing;" -U postgres
+  - composer self-update
+  - composer install --no-interaction
+  - php artisan migrate --no-interaction -vvv
+
+script:
+  - vendor/bin/phpunit

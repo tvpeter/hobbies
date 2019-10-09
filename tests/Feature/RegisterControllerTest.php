@@ -9,23 +9,24 @@ use App\User;
 
 class RegisterControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, WithFaker;
 
 
     /** @test */
-    public function user_get_registration_link_from_home_page(){
+    public function get_registration_link_from_home_page(){
         $this->get('/')
             ->assertSee('Register');
     }   
 
     /** @test */
-    public function test_user_get_registration_page(){
+    public function user_get_registration_page(){
         $this->get('/register')
             ->assertSee('Register by filling below details');
     }
 
    /** @test */
-    public function test_user_can_register(){
+    public function user_can_register(){
+        
         $response = $this->post('/register', [
             'firstName' => 'Peter',
             'lastName' => 'Tyonum',
@@ -35,6 +36,23 @@ class RegisterControllerTest extends TestCase
             'password_confirmation' => 'password2019'
         ]);
 
-        $this->assertCount(1, User::all());
+        $response->assertRedirect('/home');
+        $this->assertDatabaseHas('users', [
+            'email' => 'withtvpeter@gmail.com',
+            'phone' => '08137277480'
+        ]);
+    }
+
+    /** @test */
+    public function return_error_for_invalid_data(){
+        $response = $this->post('/register', [
+            'lastName' => 'Tyonum',
+            'email' => 'withtvpeter@gmail.com',
+            'phone' => '08137277480',
+            'password' => 'password2019',
+            'password_confirmation' => 'password2019'
+        ]);
+
+        $response->assertSessionHasErrors();
     }
 }
