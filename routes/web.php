@@ -18,12 +18,7 @@ Route::get('/', function () {
 Auth::routes();
 Auth::routes(['verify' => true]);
 
+Route::get('/home', 'HomeController@index')->name('home')->middleware('verified');
 
-Route::get('/home', 'HomeController@index')->name('home');
-
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
-
-Route::get('/hobby/create', 'HobbyController@create');
-Route::post('/hobby/create', 'HobbyController@store');
+Route::get('/hobby/create', 'HobbyController@create')->middleware('verified');;
+Route::post('/hobby/create', 'HobbyController@store')->middleware('verified');;

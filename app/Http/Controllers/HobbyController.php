@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Hobby;
+use App\Mail\HobbyCreated;
+use Mail;
 use Illuminate\Http\Request;
 
 class HobbyController extends Controller
@@ -58,8 +60,14 @@ class HobbyController extends Controller
         ]);
         $hobby->save();
 
-        return ($hobby->wasRecentlyCreated) ? back()->with('message', 'Hobby successfully created')
-            :back()->with('message', 'Supplied hobby already registered');
+        if($hobby->wasRecentlyCreated){
+            Mail::to(\Auth::user()->email)
+                ->send(new HobbyCreated(request('name'), \Auth::user()->firstName));
+
+            return back()->with('message', 'Hobby successfully created');
+        }
+        
+        return back()->with('message', 'Supplied hobby already registered');
         
      }
 

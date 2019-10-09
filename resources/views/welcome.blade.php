@@ -4,14 +4,15 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>Hobbies</title>
+        <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
 
         <!-- Styles -->
         <style>
-            html, body {
+            /* html, body {
                 background-color: #fff;
                 color: #636b6f;
                 font-family: 'Nunito', sans-serif;
@@ -60,30 +61,45 @@
 
             .m-b-md {
                 margin-bottom: 30px;
-            }
+            } */
         </style>
     </head>
     <body>
-        <div class="flex-center position-ref full-height">
-            @if (Route::has('login'))
-                <div class="top-right links">
-                    @auth
-                        <a href="{{ url('/home') }}">Home</a>
-                    @else
-                        <a href="{{ route('login') }}">Login</a>
+        <div class="row mt-4">
+            <div class="col-md-6 offset-md-3">
+                    <div class="card text-center">
+                        <div class="card-header">
+                              <h4 class="card-title">Hobbies Mgmt Webapp</h4>
+                        </div>
+                            <div class="card-body">
+                              <h4 class="card-title">Welcome</h4>
 
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}">Register</a>
-                        @endif
-                    @endauth
-                </div>
-            @endif
+                              <p class="card-text">Manage all your hobbies here</p>
 
-            <div class="content">
-                <div class="title m-b-md">
-                    Welcome to Your Hobbies App, use the above to login or register.
-                </div>
+                              @if (Route::has('login'))
+                              <div class="top-right links">
+                                  @auth
+                              <a class="btn btn-secondary btn-sm mt-2" href="{{url('/home')}}">Home</a>
+                                  @else
+                              <a class="btn btn-secondary btn-sm mt-2" href="{{ route('login') }}">Login</a>
+                                      @if (Route::has('register'))
+                              <a class="btn btn-secondary btn-sm mt-2" href="{{ route('register') }}">Register</a>
+                                      @endif
+                                  @endauth
+                              </div>
+                          @endif
+                            </div>
+                            <div class="card-footer">
+                              <p class="text-muted font-weight-bold">Made by tvpeter</p>
+                            </div>
+                          </div>
             </div>
+               
         </div>
+
+            
+
+            
+           
     </body>
 </html>
