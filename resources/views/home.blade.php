@@ -22,20 +22,6 @@
                         &nbsp;Add Hobby
                       </a>
                     </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="#edit" data-toggle="tab" role="tab">
-                        <i class="fe-icon-user"></i>
-                        &nbsp;Edit Hobbies
-                      </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="#delete" data-toggle="tab" role="tab">
-                          <i class="fe-icon-user"></i>
-                          &nbsp;Delete Hobbies
-                        </a>
-                      </li>
-                    
                   </ul>
              </div>
              <div class="card-body text-center">
@@ -64,8 +50,45 @@
                                     <th scope="row">{{ $count }}</th>
                                       <td>{{$hobby->name }}</td>
                                     <td class="text-left">{{ $hobby->description }}</td>
-                                      <td>Edit</td>
-                                      <td>Delete</td>
+                                      <td>
+
+                                          <button class="btn btn-space btn-secondary" data-toggle="modal" data-target="#mod-danger-edit{{$hobby->id}}" type="button">Edit</button>
+                                          <div class="modal fade" id="mod-danger-edit{{$hobby->id}}" tabindex="-1" role="dialog">
+                                              <div class="modal-dialog">
+                                                  <div class="modal-content">
+                                                    <div class="modal-header modal-header-colored">
+                                                      <h3 class="modal-title">Edit Hobby</h3>
+                                                      <button class="close md-close" type="button" data-dismiss="modal" aria-hidden="true"><span class="mdi mdi-close"> </span></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form method="PATCH" action="{{ url('/hobby/edit') }}">
+                                                          <input type="hidden" name="hobbyId" value="{{$hobby->id}}">
+                                                          <div class="form-group">
+                                                          <label for="title">Title</label>
+                                                          <input type="text" name="title" value="{{$hobby->name}}" class="form-control">
+                                                      </div> 
+                                                      <div class="form-group">
+                                                          <label for="title">Description</label>
+                                                      <textarea class="form-control" id="textarea-input" rows="5" name="description" required>{{$hobby->description}}</textarea>
+                                                        </div>         
+                                                    <div class="modal-footer">
+                                                        <button class="btn btn-space btn-secondary" type="submit">Submit</button>
+                                                      </div>
+                                                    </form>
+                                                  </div>
+                                                </div>
+                                          </div>
+
+                                      </td>
+                                      <td>
+                                        @php
+                                          $id = $hobby->id;
+                                          $value = $id;
+                                          $warningMessage = "Are you sure you want to delete this hobby?";
+                                          $fieldName = 'hobbyid';
+                                        @endphp
+                                        @include('layouts.delete')
+                                      </td>
                                     </tr>
                                     
                                     @endforeach
@@ -115,16 +138,7 @@
                                     </div>
                                 </form>
                                   
-                                 
-                                  
                     </div>
-                    <div class="tab-pane fade" id="edit" role="tabpanel">
-                        <p>edit</p>
-                    </div>
-                    <div class="tab-pane fade" id="delete" role="tabpanel">
-                        <p>delete</p>
-                    </div>
-                    
                   </div>
              </div>
 
