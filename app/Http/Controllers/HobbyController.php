@@ -6,8 +6,10 @@ use App\Hobby;
 use App\Mail\HobbyCreated;
 use App\Mail\HobbyDeleted;
 use App\Mail\HobbyUpdated;
+use App\Notifications\HobbyCreatedNotification;
 use Mail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 
 class HobbyController extends Controller
 {
@@ -65,8 +67,11 @@ class HobbyController extends Controller
         $hobby->save();
 
         if($hobby->wasRecentlyCreated){
-            // Mail::to(\Auth::user()->email)
-            //     ->send(new HobbyCreated(request('name'), \Auth::user()->firstName));
+            Mail::to(\Auth::user()->email)
+                ->send(new HobbyCreated(request('name'), \Auth::user()->firstName));
+
+            Notification::route('nexmo', '234'.\Auth::user()->phone)
+                    ->notify(new HobbyCreatedNotification(request('name'), \Auth::user()->firstName));
 
             return back()->with('message', 'Hobby successfully created');
         }
@@ -105,7 +110,6 @@ class HobbyController extends Controller
      */
     public function update()
     {
-        
         request()->validate([
     		'title' => 'required|string|max:30',
     		'description'=> 'required|string'

@@ -15,7 +15,8 @@
             <button class="btn btn-space btn-secondary" type="button" data-dismiss="modal">Cancel</button>
         </div>
         <div class="col-md-6 form-group text-left">
-        <form method="DELETE" action="{{ url('/hobby/delete') }}">
+        <form method="POST" action="{{ url('/hobby/delete') }}">
+          @method('DELETE')
           @csrf
         <input type="hidden" name="{{$fieldName}}" value="{{$value}}">
           <button class="btn btn-space btn-danger" type="submit">DELETE</button>

@@ -9,7 +9,6 @@
                 @extends('layouts.errors')
                 @extends('layouts.success')
                 <ul class="nav nav-tabs nav-tabs-style-4" role="tablist">
-
                         <li class="nav-item">
                                 <a class="nav-link active" href="#hobbies" data-toggle="tab" role="tab">
                                   <i class="fe-icon-home"></i>
@@ -61,7 +60,9 @@
                                                       <button class="close md-close" type="button" data-dismiss="modal" aria-hidden="true"><span class="mdi mdi-close"> </span></button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <form method="PATCH" action="{{ url('/hobby/edit') }}">
+                                                        <form method="POST" action="{{ url('/hobby/edit') }}">
+                                                          @method('PATCH')
+                                                          @csrf
                                                           <input type="hidden" name="hobbyId" value="{{$hobby->id}}">
                                                           <div class="form-group">
                                                           <label for="title">Title</label>
