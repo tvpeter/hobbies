@@ -11,14 +11,17 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
 Auth::routes();
 Auth::routes(['verify' => true]);
 
 Route::get('/home', 'HomeController@index')->name('home')->middleware('verified');
 
-Route::get('/hobby/create', 'HobbyController@create')->middleware('verified');;
-Route::post('/hobby/create', 'HobbyController@store')->middleware('verified');;
+Route::get('/hobby/create', 'HobbyController@create')->middleware('verified');
+Route::post('/hobby/create', 'HobbyController@store')->middleware('verified');
+Route::get('/hobby/delete', 'HobbyController@destroy');
+Route::get('/hobby/edit', 'HobbyController@update');
+
+Route::get('/', function () {
+    return view('welcome');
+});

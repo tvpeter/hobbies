@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Hobby;
 use App\Mail\HobbyCreated;
+use App\Mail\HobbyDeleted;
+use App\Mail\HobbyUpdated;
 use Mail;
 use Illuminate\Http\Request;
 
@@ -63,8 +65,8 @@ class HobbyController extends Controller
         $hobby->save();
 
         if($hobby->wasRecentlyCreated){
-            Mail::to(\Auth::user()->email)
-                ->send(new HobbyCreated(request('name'), \Auth::user()->firstName));
+            // Mail::to(\Auth::user()->email)
+            //     ->send(new HobbyCreated(request('name'), \Auth::user()->firstName));
 
             return back()->with('message', 'Hobby successfully created');
         }
@@ -90,9 +92,8 @@ class HobbyController extends Controller
      * @param  \App\Hobby  $hobby
      * @return \Illuminate\Http\Response
      */
-    public function edit(Hobby $hobby)
+    public function edit()
     {
-        //
     }
 
     /**
@@ -102,9 +103,26 @@ class HobbyController extends Controller
      * @param  \App\Hobby  $hobby
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Hobby $hobby)
+    public function update()
     {
-        //
+        
+        request()->validate([
+    		'title' => 'required|string|max:30',
+    		'description'=> 'required|string'
+        ]);
+
+         $updatedHobby = Hobby::where('id', request('hobbyId'))
+                ->where('user_id', \Auth::user()->id)
+          ->update(['name' => request('title'), 'description'=>request('description')]);
+
+        if($updatedHobby){
+            Mail::to(\Auth::user()->email)
+            ->send(new HobbyUpdated(\Auth::user(), request('title')));
+         
+        return back()->with('message', 'successfully updated hobby');
+        }
+        return back()->with('message', 'There was error updating your hobby, please retry');
+
     }
 
     /**
@@ -113,8 +131,16 @@ class HobbyController extends Controller
      * @param  \App\Hobby  $hobby
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Hobby $hobby)
+    public function destroy()
     {
-        //
+        if(Hobby::destroy(request('hobbyid'))){
+            Mail::to(\Auth::user()->email)
+            ->send(new HobbyDeleted(\Auth::user()));
+
+        return back()->with('message', 'successfully deleted a hobby');
+
+        }
+        return back()->with('message', 'Unable to delete hobby, try again');
+
     }
 }
