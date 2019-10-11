@@ -6,10 +6,10 @@ use App\Hobby;
 use App\Mail\HobbyCreated;
 use App\Mail\HobbyDeleted;
 use App\Mail\HobbyUpdated;
-use App\Notifications\HobbyCreatedNotification;
+use Exception;
 use Mail;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Notification;
+use Twilio\Rest\Client;
 
 class HobbyController extends Controller
 {
@@ -67,11 +67,20 @@ class HobbyController extends Controller
         $hobby->save();
 
         if($hobby->wasRecentlyCreated){
-            Mail::to(\Auth::user()->email)
-                ->send(new HobbyCreated(request('name'), \Auth::user()->firstName));
+            $firstName = \Auth::user()->firstName;
 
-            Notification::route('nexmo', '234'.\Auth::user()->phone)
-                    ->notify(new HobbyCreatedNotification(request('name'), \Auth::user()->firstName));
+            $smsMessage = 'Hello '.$firstName.', you just added a new hobby '.request('name').' to your list.';
+
+            try {
+                Mail::to(\Auth::user()->email)
+                ->send(new HobbyCreated(request('name'), $firstName));
+
+                $this->sendSms($smsMessage);
+
+            } catch (Exception $e) {
+
+                return back()->with('message', 'Hobby created with errors');
+            }
 
             return back()->with('message', 'Hobby successfully created');
         }
@@ -120,10 +129,20 @@ class HobbyController extends Controller
           ->update(['name' => request('title'), 'description'=>request('description')]);
 
         if($updatedHobby){
-            Mail::to(\Auth::user()->email)
-            ->send(new HobbyUpdated(\Auth::user(), request('title')));
-         
-        return back()->with('message', 'successfully updated hobby');
+            $smsMessage = 'Your hobby '.request('title').' has been updated.';
+
+            try {
+                Mail::to(\Auth::user()->email)
+                ->send(new HobbyUpdated(\Auth::user(), request('title')));
+
+                $this->sendSms($smsMessage);
+
+            } catch (Exception $e){
+
+                return back()->with('message', 'Hobby updated with notification errors');
+            }
+           
+        return back()->with('message', 'successfully updated one of your hobbies');
         }
         return back()->with('message', 'There was error updating your hobby, please retry');
 
@@ -138,13 +157,44 @@ class HobbyController extends Controller
     public function destroy()
     {
         if(Hobby::destroy(request('hobbyid'))){
+            $smsMessage = 'You just deleted one of your hobbies.';
+
+            try {
+
             Mail::to(\Auth::user()->email)
             ->send(new HobbyDeleted(\Auth::user()));
+            
+            $this->sendSms($smsMessage);
 
+        } catch (Exception $e){
+            report($e);
+        }
         return back()->with('message', 'successfully deleted a hobby');
 
         }
         return back()->with('message', 'Unable to delete hobby, try again');
 
     }
+
+    /**
+     * TWillio sms method
+     * @param $smsMessage - the message body
+     * @return -object
+     */
+    private function sendSms($smsMessage)
+    {
+        $userPhone = '+234'.substr(\Auth::user()->phone, 1);
+
+       $sid    = env( 'TWILIO_SID' );
+       $token  = env( 'TWILIO_TOKEN' );
+       $client = new Client( $sid, $token );
+
+       return  $client->messages->create(
+                   $userPhone,
+                   [
+                       'from' => env( 'TWILIO_FROM' ),
+                       'body' => $smsMessage,
+                   ]
+               );        
+   }
 }
