@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'driver' => env('MAIL_DRIVER', 'mailgun'),
+    'driver' => env('MAIL_DRIVER', 'postmark'),
 
     /*
     |--------------------------------------------------------------------------
@@ -56,7 +56,7 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'no-reply@myhobby.com'),
+        'address' => env('MAIL_FROM_ADDRESS', 'peter.tyonum@onasisltd.com'),
         'name' => env('MAIL_FROM_NAME', 'MY HOBBIES APP'),
     ],
 
